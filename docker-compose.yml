@@ -5,7 +5,7 @@ services:
   petstoreapp:
     build:
       context: ./petstoreapp
-    image: pscr.azurecr.io/petstoreapp:latest
+    image: clouxpsacr.azurecr.io/petstoreapp:latest
     ports:
       - "8080:8080"
     environment:
@@ -19,7 +19,7 @@ services:
   petstorepetservice:
     build:
       context: ./petstorepetservice
-    image: pscr.azurecr.io/petstorepetservice:latest
+    image: clouxpsacr.azurecr.io/petstorepetservice:latest
     ports:
       - "8081:8081"
     environment:
@@ -30,7 +30,7 @@ services:
   petstoreproductservice:
     build:
       context: ./petstoreproductservice
-    image: pscr.azurecr.io/petstoreproductservice:latest
+    image: clouxpsacr.azurecr.io/petstoreproductservice:latest
     ports:
       - "8082:8082"
     environment:
@@ -41,7 +41,7 @@ services:
   petstoreorderservice:
     build:
       context: ./petstoreorderservice
-    image: pscr.azurecr.io/petstoreorderservice:latest
+    image: clouxpsacr.azurecr.io/petstoreorderservice:latest
     ports:
       - "8083:8083"
     environment:

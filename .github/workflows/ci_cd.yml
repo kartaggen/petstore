@@ -1,8 +1,8 @@
 name: CI/CD to Azure Container Registry
 
 env:
-  AZURE_CONTAINER_REGISTRY: pscr.azurecr.io
-  AZURE_CONTAINER_REGISTRY_USERNAME: pscr
+  AZURE_CONTAINER_REGISTRY: clouxpsacr.azurecr.io
+  AZURE_CONTAINER_REGISTRY_USERNAME: clouxpsacr
   IMAGE_NAME: petstore
 
 on:
