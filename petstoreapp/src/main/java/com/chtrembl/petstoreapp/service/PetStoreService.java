@@ -11,7 +11,7 @@ import java.util.List;
 public interface PetStoreService {
 	Collection<Pet> getPets(String category);
 
-	Collection<Product> getProducts(String category, List<Tag> tags);
+	Collection<Product> getProducts(String category, List<Tag> tags) throws Exception;
 
 	void updateOrder(long productId, int quantity, boolean completeOrder);
 
