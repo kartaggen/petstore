@@ -121,6 +121,11 @@ public class PetStoreServiceImpl implements PetStoreService {
 	public Collection<Product> getProducts(String category, List<Tag> tags) {
 		List<Product> products = new ArrayList<>();
 
+		this.sessionUser.getTelemetryClient()
+				.trackEvent(String.format(
+						"PetStoreApp user %s is requesting to retrieve all available products with the PetStoreProductService",
+						this.sessionUser.getName()), this.sessionUser.getCustomEventProperties(), null);
+
 		try {
 			Consumer<HttpHeaders> consumer = it -> it.addAll(this.webRequest.getHeaders());
 			products = this.productServiceWebClient.get()
@@ -138,6 +143,9 @@ public class PetStoreServiceImpl implements PetStoreService {
 			// to show Telemetry with APIM requests (normally this would be cached in a real
 			// world production scenario)
 			this.sessionUser.setProducts(products);
+
+            this.sessionUser.getTelemetryClient()
+                    .trackMetric("productsReceived", products != null ? products.size() : -1.0);
 
 			// filter this specific request per category
 			if (tags.stream().anyMatch(t -> t.getName().equals("large"))) {
