@@ -5,7 +5,7 @@ bing:
 petstore:
   service:
     pet:
-     url: ${PETSTOREPETSERVICE_URL:http://localhost:8081}
+      url: ${PETSTOREPETSERVICE_URL:http://localhost:8081}
     product:
       url: ${PETSTOREPRODUCTSERVICE_URL:http://localhost:8082}
     order:
@@ -25,10 +25,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"       
+        include: "*"
   trace:
     http:
-      enabled: true 
+      enabled: true
   endpoint:
     httptrace:
       enabled: true
@@ -41,4 +41,4 @@ spring:
     cache-names: currentUsers
 azure:
   application-insights:
-      instrumentation-key: ${APPINSIGHTS_INSTRUMENTATIONKEY:}
+    instrumentation-key: ${PETSTOREAPP_AI_INSTRUMENTATION_KEY:}
