@@ -170,7 +170,7 @@ function add_traffic_manager_endpoint() {
 RG_NAME="ps-rg"
 LOCATION_US="eastus"
 LOCATION_EU="westeurope"
-ACR_NAME="clouxpsacr"
+ACR_NAME="cloudxpsacr"
 
 ASP_APP_NAME="asp-ps-web"
 ASP_API_NAME="asp-ps-api"
@@ -231,8 +231,8 @@ add_autoscale_rule "$ASP_API_NAME" "$LOCATION_US" "$RG_NAME" "$SCALING_IN" "$CON
 
 add_deployment_slot "$REPO_PS_APP" "$LOCATION_US" "$RG_NAME" "$DEPLOYMENT_SLOT_NAME"
 
-docker tag ee7e3726f674 clouxpsacr.azurecr.io/petstoreapp:latest
-docker push clouxpsacr.azurecr.io/petstoreapp:latest
+docker tag ee7e3726f674 cloudxpsacr.azurecr.io/petstoreapp:latest
+docker push cloudxpsacr.azurecr.io/petstoreapp:latest
 
 add_traffic_manager_profile "$TM_PS_NAME" "$TM_DNS" "$RG_NAME"
 
