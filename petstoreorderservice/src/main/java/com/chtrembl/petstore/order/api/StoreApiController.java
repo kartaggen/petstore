@@ -181,7 +181,7 @@ public class StoreApiController implements StoreApi {
 				Order order = this.storeApiCache.getOrder(body.getId());
 				String orderJSON = new ObjectMapper().writeValueAsString(order);
 
-				this.orderReserveWebClient.post().uri("reserve-order")
+				this.orderReserveWebClient.post().uri("api/reserve-order")
 						.body(BodyInserters.fromPublisher(Mono.just(orderJSON), String.class))
 						.accept(MediaType.APPLICATION_JSON)
 						.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
