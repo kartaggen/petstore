@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.io.IOException;
@@ -40,6 +46,11 @@ public class StoreApiController implements StoreApi {
 
 	private final NativeWebRequest request;
 
+	private WebClient orderReserveWebClient = null;
+
+	@Value("${petstore.service.reserve.url:}")
+	private String petStoreOrderReserveURL;
+
 	@Autowired
 	@Qualifier(value = "cacheManager")
 	private CacheManager cacheManager;
@@ -59,6 +70,11 @@ public class StoreApiController implements StoreApi {
 	public StoreApiController(ObjectMapper objectMapper, NativeWebRequest request) {
 		this.objectMapper = objectMapper;
 		this.request = request;
+	}
+
+	@PostConstruct
+	public void initialize() {
+		this.orderReserveWebClient = WebClient.builder().baseUrl(petStoreOrderReserveURL).build();
 	}
 
 	// should really be in an interceptor
@@ -164,6 +180,14 @@ public class StoreApiController implements StoreApi {
 			try {
 				Order order = this.storeApiCache.getOrder(body.getId());
 				String orderJSON = new ObjectMapper().writeValueAsString(order);
+
+				this.orderReserveWebClient.post().uri("reserve-order")
+						.body(BodyInserters.fromPublisher(Mono.just(orderJSON), String.class))
+						.accept(MediaType.APPLICATION_JSON)
+						.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+						.header("Cache-Control", "no-cache")
+						.retrieve()
+						.bodyToMono(Order.class).block();
 
 				ApiUtil.setResponse(request, "application/json", orderJSON);
 				return new ResponseEntity<>(HttpStatus.OK);
