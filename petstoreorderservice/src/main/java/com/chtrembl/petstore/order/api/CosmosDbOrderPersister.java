@@ -6,6 +6,7 @@ import com.chtrembl.petstore.order.model.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +26,12 @@ public class CosmosDbOrderPersister {
     @Value("${petstore.cosmosdb.container:}")
     private String containerName;
 
-    private final CosmosClient client;
-
+    private CosmosClient client;
     private CosmosDatabase database;
     private CosmosContainer container;
 
-    public CosmosDbOrderPersister() {
+    @PostConstruct
+    public void init() {
         List<String> preferredRegions = new ArrayList<>();
         preferredRegions.add("Central US");
 
