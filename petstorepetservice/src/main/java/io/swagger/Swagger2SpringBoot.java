@@ -9,11 +9,13 @@ import org.springframework.context.annotation.ComponentScan;
 
 import com.chtrembl.petstore.pet.model.ContainerEnvironment;
 
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
 @ComponentScan(basePackages = { "io.swagger", "com.chtrembl.petstore.pet.api", "io.swagger.configuration" })
+@EnableJpaRepositories(basePackages = "com.chtrembl.petstore.pet.data")
 public class Swagger2SpringBoot implements CommandLineRunner {
 
 	@Bean
