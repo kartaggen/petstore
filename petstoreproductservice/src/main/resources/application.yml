@@ -2,10 +2,10 @@ springfoxdocumentation:
   swagger:
     v2:
       path: /api-docs
-      
+
 server:
   port: ${PETSTOREPRODUCTSERVICE_SERVER_PORT:8080}
-  
+
 spring:
   application:
     name: petstoreproductservice
@@ -19,7 +19,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -28,10 +28,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"       
+        include: "*"
   trace:
     http:
-      enabled: true 
+      enabled: true
   endpoint:
     httptrace:
       enabled: true
