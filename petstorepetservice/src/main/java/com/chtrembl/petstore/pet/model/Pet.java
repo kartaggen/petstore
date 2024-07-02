@@ -92,7 +92,6 @@ public class Pet {
 	}
 
 	@JsonProperty("status")
-	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private StatusEnum status;
 
