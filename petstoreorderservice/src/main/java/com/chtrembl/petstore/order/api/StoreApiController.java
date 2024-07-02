@@ -189,7 +189,7 @@ public class StoreApiController implements StoreApi {
 
 			List<Product> products = this.storeApiCache.getProducts();
 
-			Order order = //this.storeApiCache.getOrder(orderId);
+			Order order = cosmosDbOrderPersister.loadOrder(orderId);
 
 			if (products != null) {
 				// cross reference order data (order only has product id and qty) with product
@@ -210,6 +210,7 @@ public class StoreApiController implements StoreApi {
 			}
 
 			try {
+				cosmosDbOrderPersister.saveOrder(order);
 				ApiUtil.setResponse(request, "application/json", new ObjectMapper().writeValueAsString(order));
 				return new ResponseEntity<>(HttpStatus.OK);
 			} catch (IOException e) {
