@@ -47,7 +47,6 @@ services:
     environment:
       - PETSTOREORDERSERVICE_SERVER_PORT=8083
       - PETSTOREPRODUCTSERVICE_URL=http://petstoreproductservice:8082
-      - PETSTOREORDERRESERVE_URL=http://petstorereserveorder:8084
     networks:
       - petstorebridge
 

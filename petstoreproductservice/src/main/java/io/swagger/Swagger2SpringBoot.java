@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.chtrembl.petstore.product.model.ContainerEnvironment;
-import com.chtrembl.petstore.product.model.DataPreload;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -20,11 +19,6 @@ public class Swagger2SpringBoot implements CommandLineRunner {
 	@Bean
 	public ContainerEnvironment containerEnvvironment() {
 		return new ContainerEnvironment();
-	}
-
-	@Bean
-	public DataPreload dataPreload() {
-		return new DataPreload();
 	}
 
 	@Override

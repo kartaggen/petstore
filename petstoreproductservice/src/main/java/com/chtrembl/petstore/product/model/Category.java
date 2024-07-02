@@ -8,17 +8,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.persistence.*;
+
 /**
  * Category
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-12-20T15:31:39.272-05:00")
-
+@Entity
+@Table(name = "category")
 public class Category {
 	@JsonProperty("id")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id = null;
 
 	@JsonProperty("name")
+	@Column(name = "name")
 	private String name = null;
 
 	public Category id(Long id) {

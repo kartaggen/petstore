@@ -8,6 +8,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.chtrembl.petstore.pet.data.PetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -26,7 +27,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.chtrembl.petstore.pet.model.ContainerEnvironment;
-import com.chtrembl.petstore.pet.model.DataPreload;
 import com.chtrembl.petstore.pet.model.ModelApiResponse;
 import com.chtrembl.petstore.pet.model.Pet;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,12 +49,7 @@ public class PetApiController implements PetApi {
 	private ContainerEnvironment containerEnvironment;
 
 	@Autowired
-	private DataPreload dataPreload;
-
-	@Override
-	public DataPreload getBeanToBeAutowired() {
-		return dataPreload;
-	}
+	private PetRepository petRepository;
 
 	@org.springframework.beans.factory.annotation.Autowired
 	public PetApiController(ObjectMapper objectMapper, NativeWebRequest request) {
@@ -100,7 +95,7 @@ public class PetApiController implements PetApi {
 					"PetStorePetService incoming GET request to petstorepetservice/v2/pet/findPetsByStatus?status=%s",
 					status));
 			try {
-				String petsJSON = new ObjectMapper().writeValueAsString(this.getPreloadedPets());
+				String petsJSON = new ObjectMapper().writeValueAsString(petRepository.findAll());
 				ApiUtil.setResponse(request, "application/json", petsJSON);
 				return new ResponseEntity<>(HttpStatus.OK);
 			} catch (JsonProcessingException e) {
