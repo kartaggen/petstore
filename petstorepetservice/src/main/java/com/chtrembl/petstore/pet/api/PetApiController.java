@@ -41,6 +41,8 @@ import io.swagger.annotations.ApiParam;
 public class PetApiController implements PetApi {
 	static final Logger log = LoggerFactory.getLogger(PetApiController.class);
 
+	private PetRepository petRepository;
+
 	private final ObjectMapper objectMapper;
 
 	private final NativeWebRequest request;
@@ -49,10 +51,8 @@ public class PetApiController implements PetApi {
 	private ContainerEnvironment containerEnvironment;
 
 	@Autowired
-	private PetRepository petRepository;
-
-	@org.springframework.beans.factory.annotation.Autowired
-	public PetApiController(ObjectMapper objectMapper, NativeWebRequest request) {
+	public PetApiController(PetRepository petRepository, ObjectMapper objectMapper, NativeWebRequest request) {
+		this.petRepository = petRepository;
 		this.objectMapper = objectMapper;
 		this.request = request;
 	}

@@ -42,6 +42,8 @@ public class ProductApiController implements ProductApi {
 
 	static final Logger log = LoggerFactory.getLogger(ProductApiController.class);
 
+	private ProductRepository productRepository;
+
 	private final ObjectMapper objectMapper;
 
 	private final NativeWebRequest request;
@@ -50,10 +52,8 @@ public class ProductApiController implements ProductApi {
 	private ContainerEnvironment containerEnvironment;
 
 	@Autowired
-	private ProductRepository productRepository;
-
-	@org.springframework.beans.factory.annotation.Autowired
-	public ProductApiController(ObjectMapper objectMapper, NativeWebRequest request) {
+	public ProductApiController(ProductRepository productRepository, ObjectMapper objectMapper, NativeWebRequest request) {
+		this.productRepository = productRepository;
 		this.objectMapper = objectMapper;
 		this.request = request;
 	}
