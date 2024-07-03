@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -36,14 +35,10 @@ public class CosmosDbOrderPersister {
 
     @PostConstruct
     public void init() {
-        List<String> preferredRegions = new ArrayList<>();
-        preferredRegions.add("Central US");
-
-        //  Create sync client
         client = new CosmosClientBuilder()
                 .endpoint(accountHost)
                 .key(accountKey)
-                .preferredRegions(preferredRegions)
+                .preferredRegions(List.of("Central US"))
                 .userAgentSuffix("CosmosDBOrderPersister")
                 .consistencyLevel(ConsistencyLevel.EVENTUAL)
                 .buildClient();
