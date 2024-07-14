@@ -36,8 +36,6 @@ public class StoreApiController implements StoreApi {
 
 	static final Logger log = LoggerFactory.getLogger(StoreApiController.class);
 
-	private final CosmosDbOrderPersister cosmosDbOrderPersister;
-
 	private final ObjectMapper objectMapper;
 
 	private final NativeWebRequest request;
@@ -52,9 +50,13 @@ public class StoreApiController implements StoreApi {
 	@Autowired
 	private StoreApiCache storeApiCache;
 
+	@Override
+	public StoreApiCache getBeanToBeAutowired() {
+		return storeApiCache;
+	}
+
 	@org.springframework.beans.factory.annotation.Autowired
-	public StoreApiController(CosmosDbOrderPersister cosmosDbOrderPersister, ObjectMapper objectMapper, NativeWebRequest request) {
-		this.cosmosDbOrderPersister = cosmosDbOrderPersister;
+	public StoreApiController(ObjectMapper objectMapper, NativeWebRequest request) {
 		this.objectMapper = objectMapper;
 		this.request = request;
 	}
@@ -98,80 +100,81 @@ public class StoreApiController implements StoreApi {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-    @Override
-    public ResponseEntity<Order> placeOrder(
-            @ApiParam(value = "order placed for purchasing the product", required = true) @Valid @RequestBody Order body) {
-        conigureThreadForLogging();
+	@Override
+	public ResponseEntity<Order> placeOrder(
+			@ApiParam(value = "order placed for purchasing the product", required = true) @Valid @RequestBody Order body) {
+		conigureThreadForLogging();
 
-        String acceptType = request.getHeader("Content-Type");
-        String contentType = request.getHeader("Content-Type");
-        if (acceptType != null && contentType != null && acceptType.contains("application/json")
-                && contentType.contains("application/json")) {
+		String acceptType = request.getHeader("Content-Type");
+		String contentType = request.getHeader("Content-Type");
+		if (acceptType != null && contentType != null && acceptType.contains("application/json")
+				&& contentType.contains("application/json")) {
 
-            log.info(String.format(
-                    "PetStoreOrderService incoming POST request to petstoreorderservice/v2/order/placeOder for order id:%s",
-                    body.getId()));
+			log.info(String.format(
+					"PetStoreOrderService incoming POST request to petstoreorderservice/v2/order/placeOder for order id:%s",
+					body.getId()));
 
-            Order order = cosmosDbOrderPersister.loadOrder(body.getId());
-            order.setEmail(body.getEmail());
-            order.setComplete(body.isComplete());
+			this.storeApiCache.getOrder(body.getId()).setId(body.getId());
+			this.storeApiCache.getOrder(body.getId()).setEmail(body.getEmail());
+			this.storeApiCache.getOrder(body.getId()).setComplete(body.isComplete());
 
-            // 1 product is just an add from a product page so cache needs to be updated
-            if (body.getProducts() != null && body.getProducts().size() == 1) {
-                Product incomingProduct = body.getProducts().get(0);
-                List<Product> existingProducts = order.getProducts();
-                if (existingProducts != null && existingProducts.size() > 0) {
-                    // removal if one exists...
-                    if (incomingProduct.getQuantity() == 0) {
-                        existingProducts.removeIf(product -> product.getId().equals(incomingProduct.getId()));
-                        order.setProducts(existingProducts);
-                    }
-                    // update quantity if one exists or add new entry
-                    else {
-                        Product product = existingProducts.stream()
-                                .filter(existingProduct -> existingProduct.getId().equals(incomingProduct.getId()))
-                                .findAny().orElse(null);
-                        if (product != null) {
-                            // one exists
-                            int qty = product.getQuantity() + incomingProduct.getQuantity();
-                            // if the count falls below 1, remove it
-                            if (qty < 1) {
-                                existingProducts.removeIf(p -> p.getId().equals(incomingProduct.getId()));
-                            } else if (qty < 11) {
-                                product.setQuantity(qty);
-                            }
-                        } else {
-                            // existing products but one does not exist matching the incoming product
-                            order.addProductsItem(body.getProducts().get(0));
-                        }
-                    }
-                } else {
-                    // nothing existing....
-                    if (body.getProducts().get(0).getQuantity() > 0) {
-                        order.setProducts(body.getProducts());
-                    }
-                }
-            }
-            // n products is the current order being modified and so cache can be replaced
-            // with it
-            if (body.getProducts() != null && body.getProducts().size() > 1) {
-                order.setProducts(body.getProducts());
-            }
+			// 1 product is just an add from a product page so cache needs to be updated
+			if (body.getProducts() != null && body.getProducts().size() == 1) {
+				Product incomingProduct = body.getProducts().get(0);
+				List<Product> existingProducts = this.storeApiCache.getOrder(body.getId()).getProducts();
+				if (existingProducts != null && existingProducts.size() > 0) {
+					// removal if one exists...
+					if (incomingProduct.getQuantity() == 0) {
+						existingProducts.removeIf(product -> product.getId().equals(incomingProduct.getId()));
+						this.storeApiCache.getOrder(body.getId()).setProducts(existingProducts);
+					}
+					// update quantity if one exists or add new entry
+					else {
 
-            try {
-                cosmosDbOrderPersister.saveOrder(order);
-                String orderJSON = new ObjectMapper().writeValueAsString(order);
+						Product product = existingProducts.stream()
+								.filter(existingProduct -> existingProduct.getId().equals(incomingProduct.getId()))
+								.findAny().orElse(null);
+						if (product != null) {
+							// one exists
+							int qty = product.getQuantity() + incomingProduct.getQuantity();
+							// if the count falls below 1, remove it
+							if (qty < 1) {
+								existingProducts.removeIf(p -> p.getId().equals(incomingProduct.getId()));
+							} else if (qty < 11) {
+								product.setQuantity(qty);
+							}
+						} else {
+							// existing products but one does not exist matching the incoming product
+							this.storeApiCache.getOrder(body.getId()).addProductsItem(body.getProducts().get(0));
+						}
+					}
+				} else {
+					// nothing existing....
+					if (body.getProducts().get(0).getQuantity() > 0) {
+						this.storeApiCache.getOrder(body.getId()).setProducts(body.getProducts());
+					}
+				}
+			}
+			// n products is the current order being modified and so cache can be replaced
+			// with it
+			if (body.getProducts() != null && body.getProducts().size() > 1) {
+				this.storeApiCache.getOrder(body.getId()).setProducts(body.getProducts());
+			}
 
-                ApiUtil.setResponse(request, "application/json", orderJSON);
-                return new ResponseEntity<>(HttpStatus.OK);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<Order>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
+			try {
+				Order order = this.storeApiCache.getOrder(body.getId());
+				String orderJSON = new ObjectMapper().writeValueAsString(order);
+				ApiUtil.setResponse(request, "application/json", orderJSON);
+				return new ResponseEntity<>(HttpStatus.OK);
+			} catch (IOException e) {
+				log.error("Couldn't serialize response for content type application/json", e);
+				return new ResponseEntity<Order>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 
-        return new ResponseEntity<Order>(HttpStatus.NOT_IMPLEMENTED);
-    }
+		return new ResponseEntity<Order>(HttpStatus.NOT_IMPLEMENTED);
+
+	}
 
 	@Override
 	public ResponseEntity<Order> getOrderById(
@@ -189,7 +192,7 @@ public class StoreApiController implements StoreApi {
 
 			List<Product> products = this.storeApiCache.getProducts();
 
-			Order order = cosmosDbOrderPersister.loadOrder(orderId);
+			Order order = this.storeApiCache.getOrder(orderId);;
 
 			if (products != null) {
 				// cross reference order data (order only has product id and qty) with product
@@ -210,7 +213,6 @@ public class StoreApiController implements StoreApi {
 			}
 
 			try {
-				cosmosDbOrderPersister.saveOrder(order);
 				ApiUtil.setResponse(request, "application/json", new ObjectMapper().writeValueAsString(order));
 				return new ResponseEntity<>(HttpStatus.OK);
 			} catch (IOException e) {
