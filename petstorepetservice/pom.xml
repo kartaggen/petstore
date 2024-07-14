@@ -28,6 +28,7 @@
         <postgresql.version>42.5.4</postgresql.version>
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <lombock.version>1.18.24</lombock.version>
+        <keyvault.version>5.12.0</keyvault.version>
     </properties>
 
     <dependencies>
@@ -93,6 +94,11 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-starter-keyvault-secrets</artifactId>
+            <version>${keyvault.version}</version>
         </dependency>
 
         <dependency>
