@@ -11,10 +11,21 @@ azure:
     uri: "https://cloudx-petstore-keyvault.vault.azure.net/"
     tenant-id: ${TENANT_ID}
     managed-identity: ${SERVICE_ACCOUNT}
+    enabled: true
   
 spring:
   application:
     name: petstorepetservice
+  cloud:
+    azure:
+      compatibility-verifier:
+        enabled: false
+      keyvault:
+        secret:
+          property-sources[0]:
+            name: key-vault-property-source-1
+            endpoint: https://cloudx-petstore-keyvault.vault.azure.net/
+          property-source-enabled: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
