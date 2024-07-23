@@ -17,18 +17,18 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"       
+        include: "*"
   trace:
     http:
-      enabled: true 
+      enabled: true
   endpoint:
     httptrace:
       enabled: true
-    
+
 data:
   products:
     - id: 1
-      category: 
+      category:
         id: 1
         name: "Dog Toy"
       name: "Ball"
@@ -40,7 +40,7 @@ data:
           name: "large"
       status: "available"
     - id: 2
-      category: 
+      category:
         id: 1
         name: "Dog Toy"
       name: "Ball Launcher"
@@ -50,7 +50,7 @@ data:
           name: "large"
       status: "available"
     - id: 3
-      category: 
+      category:
         id: 1
         name: "Dog Toy"
       name: "Plush Lamb"
@@ -62,7 +62,7 @@ data:
           name: "large"
       status: "available"
     - id: 4
-      category: 
+      category:
         id: 1
         name: "Dog Toy"
       name: "Plush Moose"
@@ -74,7 +74,7 @@ data:
           name: "large"
       status: "available"
     - id: 5
-      category: 
+      category:
         id: 1
         name: "Dog Food"
       name: "Large Breed Dry Food"
@@ -84,7 +84,7 @@ data:
           name: "large"
       status: "available"
     - id: 6
-      category: 
+      category:
         id: 1
         name: "Dog Food"
       name: "Small Breed Dry Food"
@@ -94,7 +94,7 @@ data:
           name: "small"
       status: "available"
     - id: 7
-      category: 
+      category:
         id: 1
         name: "Cat Toy"
       name: "Mouse"
@@ -106,7 +106,7 @@ data:
           name: "large"
       status: "available"
     - id: 8
-      category: 
+      category:
         id: 1
         name: "Cat Toy"
       name: "Scratcher"
@@ -118,7 +118,7 @@ data:
           name: "large"
       status: "available"
     - id: 9
-      category: 
+      category:
         id: 1
         name: "Cat Food"
       name: "All Sizes Cat Dry Food"
@@ -130,7 +130,7 @@ data:
           name: "large"
       status: "available"
     - id: 10
-      category: 
+      category:
         id: 1
         name: "Fish Toy"
       name: "Mangrove Ornament"
@@ -142,7 +142,7 @@ data:
           name: "large"
       status: "available"
     - id: 11
-      category: 
+      category:
         id: 1
         name: "Fish Food"
       name: "All Sizes Fish Food"
