@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.chtrembl.petstore.product.model.DataPreload;
 import com.chtrembl.petstore.product.model.ModelApiResponse;
 import com.chtrembl.petstore.product.model.Product;
 
@@ -42,6 +43,16 @@ public interface ProductApi {
 	// beans, all implementation should occur in Controller tho
 	default Optional<NativeWebRequest> getRequest() {
 		return Optional.empty();
+	}
+
+	// wired in for the scenario the interface declarations need access to scoped
+	// beans, all implementation should occur in Controller tho
+	public DataPreload getBeanToBeAutowired();
+
+	// wired in for the scenario the interface declarations need access to scoped
+	// beans, all implementation should occur in Controller tho
+	default List<Product> getPreloadedProducts() {
+		return getBeanToBeAutowired().getProducts();
 	}
 
 	@ApiOperation(value = "Add a new product to the store", nickname = "addProduct", notes = "", authorizations = {

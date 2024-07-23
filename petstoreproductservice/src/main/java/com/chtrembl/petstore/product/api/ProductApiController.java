@@ -8,7 +8,6 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.chtrembl.petstore.product.data.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -27,6 +26,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.chtrembl.petstore.product.model.ContainerEnvironment;
+import com.chtrembl.petstore.product.model.DataPreload;
 import com.chtrembl.petstore.product.model.ModelApiResponse;
 import com.chtrembl.petstore.product.model.Product;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,8 +42,6 @@ public class ProductApiController implements ProductApi {
 
 	static final Logger log = LoggerFactory.getLogger(ProductApiController.class);
 
-	private ProductRepository productRepository;
-
 	private final ObjectMapper objectMapper;
 
 	private final NativeWebRequest request;
@@ -52,8 +50,15 @@ public class ProductApiController implements ProductApi {
 	private ContainerEnvironment containerEnvironment;
 
 	@Autowired
-	public ProductApiController(ProductRepository productRepository, ObjectMapper objectMapper, NativeWebRequest request) {
-		this.productRepository = productRepository;
+	private DataPreload dataPreload;
+
+	@Override
+	public DataPreload getBeanToBeAutowired() {
+		return dataPreload;
+	}
+
+	@org.springframework.beans.factory.annotation.Autowired
+	public ProductApiController(ObjectMapper objectMapper, NativeWebRequest request) {
 		this.objectMapper = objectMapper;
 		this.request = request;
 	}
@@ -96,7 +101,7 @@ public class ProductApiController implements ProductApi {
 					"PetStoreProductService incoming GET request to petstoreproductservice/v2/pet/findProductsByStatus?status=%s",
 					status));
 			try {
-				String petsJSON = new ObjectMapper().writeValueAsString(productRepository.findAll());
+				String petsJSON = new ObjectMapper().writeValueAsString(this.getPreloadedProducts());
 				ApiUtil.setResponse(request, "application/json", petsJSON);
 				return new ResponseEntity<>(HttpStatus.OK);
 			} catch (JsonProcessingException e) {

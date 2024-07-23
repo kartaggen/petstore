@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -21,37 +20,23 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-12-20T15:31:39.272-05:00")
-@Entity
-@Table(name = "product")
+
 public class Product {
 	@JsonProperty("id")
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
 	private Long id;
 
 	@JsonProperty("category")
-	@ManyToOne
-	@JoinColumn(name = "category_id")
 	private Category category;
 
 	@JsonProperty("name")
-	@Column(name = "name")
 	private String name;
 
 	@JsonProperty("photoURL")
 	@Valid
-	@Column(name = "photoURL")
 	private String photoURL;
 
 	@JsonProperty("tags")
 	@Valid
-	@ManyToMany
-	@JoinTable(
-			name = "product_tag",
-			joinColumns = @JoinColumn(name = "product_id"),
-			inverseJoinColumns = @JoinColumn(name = "tag_id")
-	)
 	private List<Tag> tags = null;
 
 	/**
@@ -92,7 +77,6 @@ public class Product {
 	}
 
 	@JsonProperty("status")
-	@Column(name = "status")
 	private StatusEnum status;
 
 	public Product id(Long id) {
