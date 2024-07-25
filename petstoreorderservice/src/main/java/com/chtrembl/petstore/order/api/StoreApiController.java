@@ -77,7 +77,7 @@ public class StoreApiController implements StoreApi {
 
 	@PostConstruct
 	public void initialize() {
-		ServiceBusSenderClient senderClient = new ServiceBusClientBuilder()
+		this.senderClient = new ServiceBusClientBuilder()
 				.connectionString(serviceBusConnectionString)
 				.sender()
 				.queueName("orderqueue")
