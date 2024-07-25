@@ -3,7 +3,7 @@ name: CI/CD to Azure Container Registry
 env:
   AZURE_CONTAINER_REGISTRY: cloudxpsacr.azurecr.io
   AZURE_CONTAINER_REGISTRY_USERNAME: cloudxpsacr
-  IMAGE_NAME: petstore
+  TAG: v${{ github.run_number }}
 
 on:
   push:

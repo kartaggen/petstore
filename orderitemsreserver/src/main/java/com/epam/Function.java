@@ -1,25 +1,48 @@
 package com.epam;
 
+import com.azure.core.http.policy.ExponentialBackoffOptions;
+import com.azure.core.http.policy.RetryOptions;
+import com.azure.core.util.BinaryData;
+import com.azure.storage.blob.BlobClient;
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobServiceClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.microsoft.azure.functions.ExecutionContext;
-import com.microsoft.azure.functions.OutputBinding;
-import com.microsoft.azure.functions.annotation.BlobInput;
-import com.microsoft.azure.functions.annotation.BlobOutput;
 import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.ServiceBusQueueTrigger;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 public class Function {
 
     @FunctionName("reserve-order")
     public void run(
-            @ServiceBusQueueTrigger(name = "message", queueName = "orderqueue", connection = "your-connection-name") String order,
-            @BlobInput(name = "inputBlob", connection = "MyStorageConnectionAppSetting", path = "ps-storage/orders.json") String inputBlob,
-            @BlobOutput(name = "outputBlob", connection = "MyStorageConnectionAppSetting", path = "ps-storage/orders.json") OutputBinding<String> outputBlob,
-            final ExecutionContext context) {
+            @ServiceBusQueueTrigger(name = "message", queueName = "orderqueue", connection = "MyServiceBusConnectionAppSetting") String order,
+            final ExecutionContext context) throws IOException {
 
+        ExponentialBackoffOptions exponentialBackoffOptions = new ExponentialBackoffOptions();
+        exponentialBackoffOptions.setMaxRetries(3);
+        exponentialBackoffOptions.setBaseDelay(Duration.ofSeconds(3));
+        exponentialBackoffOptions.setMaxDelay(Duration.ofSeconds(30));
+
+        BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+                .connectionString(System.getenv("MyStorageConnectionAppSetting"))
+                .retryOptions(new RetryOptions(exponentialBackoffOptions))
+                .buildClient();
+        BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient("ps-storage");
+
+        BlobClient inputBlobClient = containerClient.getBlobClient("orders.json");
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        inputBlobClient.downloadStream(outputStream);
+        String inputBlob = outputStream.toString(StandardCharsets.UTF_8);
         JsonArray ordersJson = JsonParser.parseString(inputBlob).getAsJsonArray();
 
         if (order == null || order.isEmpty()) {
@@ -41,7 +64,11 @@ public class Function {
         }
 
         updateOrder(ordersJson, newOrder);
-        outputBlob.setValue(ordersJson.toString());
+
+        BlobClient outputBlobClient = containerClient.getBlobClient("orders.json");
+        outputStream = new ByteArrayOutputStream();
+        outputStream.write(ordersJson.toString().getBytes(StandardCharsets.UTF_8));
+        outputBlobClient.upload(BinaryData.fromBytes(outputStream.toByteArray()), true);
     }
 
     public void updateOrder(JsonArray allOrders, JsonObject newOrder) {

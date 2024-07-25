@@ -5,7 +5,7 @@ services:
   petstoreapp:
     build:
       context: ./petstoreapp
-    image: cloudxpsacr.azurecr.io/petstoreapp:latest
+    image: cloudxpsacr.azurecr.io/petstoreapp:${TAG}
     ports:
       - "8080:8080"
     environment:
@@ -19,7 +19,7 @@ services:
   petstorepetservice:
     build:
       context: ./petstorepetservice
-    image: cloudxpsacr.azurecr.io/petstorepetservice:latest
+    image: cloudxpsacr.azurecr.io/petstorepetservice:${TAG}
     ports:
       - "8081:8081"
     environment:
@@ -30,7 +30,7 @@ services:
   petstoreproductservice:
     build:
       context: ./petstoreproductservice
-    image: cloudxpsacr.azurecr.io/petstoreproductservice:latest
+    image: cloudxpsacr.azurecr.io/petstoreproductservice:${TAG}
     ports:
       - "8082:8082"
     environment:
@@ -41,7 +41,7 @@ services:
   petstoreorderservice:
     build:
       context: ./petstoreorderservice
-    image: cloudxpsacr.azurecr.io/petstoreorderservice:latest
+    image: cloudxpsacr.azurecr.io/petstoreorderservice:${TAG}
     ports:
       - "8083:8083"
     environment:
