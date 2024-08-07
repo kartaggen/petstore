@@ -38,17 +38,24 @@ spring:
   thymeleaf:
     cache: false
   cache:
-    cache-names: currentUsers
+    cache-names: currentUsers]
+  cloud:
+    azure:
+      active-directory:
+        b2c:
+          enabled: true
+          base-uri: https://cloudxpetstore.b2clogin.com/cloudxpetstore.onmicrosoft.com/
+          credential:
+            client-id: ${PETSTOREAPP_CLIENT_ID}
+            client-secret: ${PETSTOREAPP_CLIENT_SECRET}
+          login-flow: sign-up-or-sign-in
+          logout-success-url: ${PETSTOREAPP_LOGOUT_URL}
+          user-flows:
+            sign-up-or-sign-in: B2C_1_signupsignin
+#            profile-edit: <your-profile-edit-user-flow-name>
+#            password-reset: <your-password-reset-user-flow-name>
+#          user-name-attribute-name: <your-user-name-attribute-name>
+
 azure:
   application-insights:
     instrumentation-key: ${PETSTOREAPP_AI_INSTRUMENTATION_KEY:}
-  activedirectory:
-    b2c:
-      tenant: ${PETSTOREAPP_TENANT}
-      oidc-enabled: true
-      client-id: ${PETSTOREAPP_CLIENT_ID}
-      client-secret: ${PETSTOREAPP_CLIENT_SECRET}
-      reply-url: ${PETSTOREAPP_REPLY_URL}
-      logout-success-url: ${PETSTOREAPP_LOGOUT_URL}
-      user-flows:
-        sign-up-or-sign-in: B2C_1_signupsignin
