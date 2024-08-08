@@ -43,18 +43,20 @@ spring:
     azure:
       active-directory:
         b2c:
-          enabled: true
-          base-uri: https://cloudxpetstore.b2clogin.com/cloudxpetstore.onmicrosoft.com/
+          enabled: 'true'
+          oidc-enabled: 'true'
+          base-uri: 'https://cloudxpetstore.b2clogin.com/cloudxpetstore.onmicrosoft.com/'
+          tenant: ${PETSTOREAPP_TENANT}
+          login-flow: sign-up-or-sign-in
           credential:
             client-id: ${PETSTOREAPP_CLIENT_ID}
             client-secret: ${PETSTOREAPP_CLIENT_SECRET}
-          login-flow: sign-up-or-sign-in
           logout-success-url: ${PETSTOREAPP_LOGOUT_URL}
+          user-name-attribute-name: sub
           user-flows:
-            sign-up-or-sign-in: B2C_1_signupsignin
-#            profile-edit: <your-profile-edit-user-flow-name>
-#            password-reset: <your-password-reset-user-flow-name>
-#          user-name-attribute-name: <your-user-name-attribute-name>
+            sign-up-or-sign-in: 'B2C_1_signupsignin'
+            profile-edit: 'B2C_1_profileediting'
+            password-reset: 'B2C_1_passwordreset'
 
 azure:
   application-insights:
