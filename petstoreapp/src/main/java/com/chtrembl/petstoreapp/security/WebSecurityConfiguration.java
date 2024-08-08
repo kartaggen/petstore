@@ -50,9 +50,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 					.antMatchers("/bingSearch*").permitAll()
 					.antMatchers("/signalr/negotiate").permitAll()
 					.antMatchers("/signalr/test").permitAll()
-					.antMatchers("/login*").permitAll().anyRequest()
+					.antMatchers("/login/**").permitAll()
+					.antMatchers("/oauth2/**").permitAll().anyRequest()
 					.authenticated().and().apply(this.aadB2COidcLoginConfigurerWrapper.getConfigurer()).and()
-					.oauth2Login().loginPage("/login");
+					.logout()
+					.logoutSuccessUrl("/");
 
 			this.containeEnvironment.setSecurityEnabled(true);
 		} else {

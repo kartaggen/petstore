@@ -51,8 +51,8 @@ spring:
           credential:
             client-id: ${PETSTOREAPP_CLIENT_ID}
             client-secret: ${PETSTOREAPP_CLIENT_SECRET}
+          reply-url: ${PETSTOREAPP_REPLY_URL}
           logout-success-url: ${PETSTOREAPP_LOGOUT_URL}
-          user-name-attribute-name: sub
           user-flows:
             sign-up-or-sign-in: 'B2C_1_signupsignin'
             profile-edit: 'B2C_1_profileediting'
