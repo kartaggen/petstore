@@ -2,7 +2,7 @@ springfoxdocumentation:
   swagger:
     v2:
       path: /api-docs
-      
+
 server:
   port: ${PETSTOREORDERSERVICE_SERVER_PORT:8080}
 
@@ -10,6 +10,11 @@ petstore:
   service:
     product:
       url: ${PETSTOREPRODUCTSERVICE_URL:http://localhost:8082}
+  cosmosdb:
+    accountkey: ${COSMOSDB_ACCOUNT_KEY:}
+    accounthost: ${COSMOSDB_ACCOUNT_HOST:}
+    database: ${COSMOSDB_DATABASE:}
+    container: ${COSMOSDB_CONTAINER:}
 
 spring:
   application:
@@ -22,10 +27,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"       
+        include: "*"
   trace:
     http:
-      enabled: true 
+      enabled: true
   endpoint:
     httptrace:
       enabled: true

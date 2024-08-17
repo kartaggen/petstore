@@ -39,16 +39,6 @@ public interface StoreApi {
 		return Optional.empty();
 	}
 
-	// wired in for the scenario the interface declarations need access to scoped
-	// beans, all implementation should occur in Controller tho
-	public StoreApiCache getBeanToBeAutowired();
-
-	// wired in for the scenario the interface declarations need access to scoped
-	// beans, all implementation should occur in Controller tho
-	default Order getStoreApiCache(String id) {
-		return getBeanToBeAutowired().getOrder(id);
-	}
-
 	@ApiOperation(value = "Delete purchase order by ID", nickname = "deleteOrder", notes = "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors", tags = {
 			"store", })
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID supplied"),
