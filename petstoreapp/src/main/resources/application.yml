@@ -46,18 +46,31 @@ spring:
           enabled: 'true'
           oidc-enabled: 'true'
           base-uri: 'https://cloudxpetstore.b2clogin.com/cloudxpetstore.onmicrosoft.com/'
-          tenant: ${PETSTOREAPP_TENANT}
+          tenant: ${CLOUDXPETSTORE_TENANT}
           login-flow: sign-up-or-sign-in
           credential:
-            client-id: ${PETSTOREAPP_CLIENT_ID}
-            client-secret: ${PETSTOREAPP_CLIENT_SECRET}
-          reply-url: ${PETSTOREAPP_REPLY_URL}
-          logout-success-url: ${PETSTOREAPP_LOGOUT_URL}
+            client-id: ${CLOUDXPETSTORE_CLIENT_ID}
+            client-secret: ${CLOUDXPETSTORE_CLIENT_SECRET}
+          reply-url: ${CLOUDXPETSTORE_REPLY_URL}
+          logout-success-url: ${CLOUDXPETSTORE_LOGOUT_URL}
           user-flows:
             sign-up-or-sign-in: 'B2C_1_signupsignin'
             profile-edit: 'B2C_1_profileediting'
             password-reset: 'B2C_1_passwordreset'
+      compatibility-verifier:
+        enabled: false
+      keyvault:
+        secret:
+          property-sources[0]:
+            name: key-vault-property-source-1
+            endpoint: https://cloudx-petstore-keyvault.vault.azure.net/
+          property-source-enabled: true
 
 azure:
   application-insights:
     instrumentation-key: ${PETSTOREAPP_AI_INSTRUMENTATION_KEY:}
+  keyvault:
+    uri: "https://cloudx-petstore-keyvault.vault.azure.net/"
+    tenant-id: ${TENANT_ID}
+    managed-identity: ${SERVICE_ACCOUNT}
+    enabled: true
