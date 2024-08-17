@@ -38,7 +38,7 @@ spring:
   thymeleaf:
     cache: false
   cache:
-    cache-names: currentUsers]
+    cache-names: currentUsers
   cloud:
     azure:
       active-directory:
@@ -50,7 +50,7 @@ spring:
           login-flow: sign-up-or-sign-in
           credential:
             client-id: ${CLOUDXPETSTORE_CLIENT_ID}
-            client-secret: ${CLOUDXPETSTORE-CLIENT-SECRET}
+            client-secret: ${CLOUDXPETSTORE_CLIENT_SECRET}
           reply-url: ${CLOUDXPETSTORE_REPLY_URL}
           logout-success-url: ${CLOUDXPETSTORE_LOGOUT_URL}
           user-flows:
