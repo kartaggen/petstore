@@ -50,7 +50,7 @@ spring:
           login-flow: sign-up-or-sign-in
           credential:
             client-id: ${CLOUDXPETSTORE_CLIENT_ID}
-            client-secret: ${CLOUDXPETSTORE_CLIENT_SECRET}
+            client-secret: ${CLOUDXPETSTORE-CLIENT-SECRET}
           reply-url: ${CLOUDXPETSTORE_REPLY_URL}
           logout-success-url: ${CLOUDXPETSTORE_LOGOUT_URL}
           user-flows:
