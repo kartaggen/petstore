@@ -27,24 +27,6 @@ public class Function {
             @ServiceBusQueueTrigger(name = "message", queueName = "orderqueue", connection = "MyServiceBusConnectionAppSetting") String order,
             final ExecutionContext context) throws IOException {
 
-        ExponentialBackoffOptions exponentialBackoffOptions = new ExponentialBackoffOptions();
-        exponentialBackoffOptions.setMaxRetries(3);
-        exponentialBackoffOptions.setBaseDelay(Duration.ofSeconds(3));
-        exponentialBackoffOptions.setMaxDelay(Duration.ofSeconds(30));
-
-        BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
-                .connectionString(System.getenv("MyStorageConnectionAppSetting"))
-                .retryOptions(new RetryOptions(exponentialBackoffOptions))
-                .buildClient();
-        BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient("ps-storage");
-
-        BlobClient inputBlobClient = containerClient.getBlobClient("orders.json");
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        inputBlobClient.downloadStream(outputStream);
-        String inputBlob = outputStream.toString(StandardCharsets.UTF_8);
-        JsonArray ordersJson = JsonParser.parseString(inputBlob).getAsJsonArray();
-
         if (order == null || order.isEmpty()) {
             throw new IllegalArgumentException("Missing order!");
         }
@@ -63,25 +45,21 @@ public class Function {
             throw new IllegalArgumentException("Invalid ID in order!");
         }
 
-        updateOrder(ordersJson, newOrder);
+        ExponentialBackoffOptions exponentialBackoffOptions = new ExponentialBackoffOptions();
+        exponentialBackoffOptions.setMaxRetries(3);
+        exponentialBackoffOptions.setBaseDelay(Duration.ofSeconds(3));
+        exponentialBackoffOptions.setMaxDelay(Duration.ofSeconds(30));
 
-        BlobClient outputBlobClient = containerClient.getBlobClient("orders.json");
-        outputStream = new ByteArrayOutputStream();
-        outputStream.write(ordersJson.toString().getBytes(StandardCharsets.UTF_8));
+        BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+                .connectionString(System.getenv("MyStorageConnectionAppSetting"))
+                .retryOptions(new RetryOptions(exponentialBackoffOptions))
+                .buildClient();
+        BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient("ps-storage");
+
+        BlobClient outputBlobClient = containerClient.getBlobClient(id + ".json");
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        outputStream.write(newOrder.toString().getBytes(StandardCharsets.UTF_8));
         outputBlobClient.upload(BinaryData.fromBytes(outputStream.toByteArray()), true);
-    }
-
-    public void updateOrder(JsonArray allOrders, JsonObject newOrder) {
-        String id = newOrder.get("id").getAsString();
-        for (int i = 0; i < allOrders.size(); i++) {
-            JsonObject currentOrder = allOrders.get(i).getAsJsonObject();
-            if (id.equals(currentOrder.get("id").getAsString())) {
-                allOrders.set(i, newOrder);
-                return;
-            }
-        }
-
-        allOrders.add(newOrder);
     }
 
 }
